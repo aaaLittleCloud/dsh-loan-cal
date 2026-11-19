@@ -37,8 +37,22 @@
 
 ## 安装与开发
 
+从 Release 的 tarball 安装，不需要 npm 账号，也不需要 git：
+
 ```sh
-dsh plugin --profile <profile> add dsh-loan-cal
+dsh plugin --profile <profile> add https://github.com/aaaLittleCloud/dsh-loan-cal/releases/download/v0.1.0/dsh-loan-cal-0.1.0.tgz
+```
+
+或者从源码装：
+
+```sh
+git clone https://github.com/aaaLittleCloud/dsh-loan-cal
+dsh plugin --profile <profile> add file:./dsh-loan-cal
+```
+
+尚未发布到 npm；发布后为 `dsh plugin --profile <profile> add dsh-loan-cal`。
+
+```sh
 npm test        # 99 个测试，无需网络
 ```
 

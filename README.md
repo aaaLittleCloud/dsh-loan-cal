@@ -42,8 +42,22 @@ Documentation is bilingual: this file and [README-zh.md](README-zh.md).
 
 ## Install and development
 
+Install from the release tarball — no npm account, no git:
+
 ```sh
-dsh plugin --profile <profile> add dsh-loan-cal
+dsh plugin --profile <profile> add https://github.com/aaaLittleCloud/dsh-loan-cal/releases/download/v0.1.0/dsh-loan-cal-0.1.0.tgz
+```
+
+Or from source:
+
+```sh
+git clone https://github.com/aaaLittleCloud/dsh-loan-cal
+dsh plugin --profile <profile> add file:./dsh-loan-cal
+```
+
+Not on npm yet; once published it will be `dsh plugin --profile <profile> add dsh-loan-cal`.
+
+```sh
 npm test        # 99 tests, no network
 ```
 
