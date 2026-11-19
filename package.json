@@ -1,9 +1,18 @@
 {
   "name": "dsh-loan-cal",
   "version": "0.1.0",
-  "description": "Strict-convention loan math for DeepSeek Harness, aligned with the PBOC 2021 disclosure examples: real annualized rate from installment fees (shipped), plus amortization schedules, repayment-schedule audits (.csv/.tsv) and prepayment break-even (in progress). · 严格口径的借贷计算插件，口径对齐央行〔2021〕第 3 号算例：分期年化已上线；还款计划、还款计划表审计（.csv/.tsv）、提前还款临界点在做。",
+  "description": "Six strict-convention loan tools for DeepSeek Harness: real APR from installment fees, amortisation schedules, bank-statement audits, prepayment break-even, offer comparison and LPR repricing. Zero runtime dependencies. · 严格口径的借贷计算插件：六个工具覆盖分期年化、摊还表、计划表审计、提前还款、方案对比与 LPR 重定价；零运行时依赖。",
   "type": "module",
   "main": "index.js",
+  "author": "aaaLittleCloud",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaaLittleCloud/dsh-loan-cal.git"
+  },
+  "homepage": "https://github.com/aaaLittleCloud/dsh-loan-cal#readme",
+  "bugs": {
+    "url": "https://github.com/aaaLittleCloud/dsh-loan-cal/issues"
+  },
   "exports": {
     ".": "./index.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
@@ -14,6 +23,7 @@
     "lib",
     "cordis.patch.yml",
     "README.md",
+    "README-zh.md",
     "LICENSE"
   ],
   "engines": {
