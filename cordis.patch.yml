@@ -1,0 +1,9 @@
+# dsh bundle patch: inserts this plugin into a profile's layer stack.
+#
+# `name` is relative on purpose. DSH anchors a relative `name:` beside the patch
+# file that declared it, so this row loads this bundle's own index.js whatever the
+# install folder is called (`node_modules/dsh-loan-cal` from npm, or a `file:`
+# link whose folder has another name).
+- insert:
+    - id: loan-cal
+      name: './index.js'

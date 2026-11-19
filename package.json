@@ -1,0 +1,46 @@
+{
+  "name": "dsh-loan-cal",
+  "version": "0.1.0",
+  "description": "Strict-convention loan math for DeepSeek Harness, aligned with the PBOC 2021 disclosure examples: real annualized rate from installment fees (shipped), plus amortization schedules, repayment-schedule audits (.csv/.tsv) and prepayment break-even (in progress). · 严格口径的借贷计算插件，口径对齐央行〔2021〕第 3 号算例：分期年化已上线；还款计划、还款计划表审计（.csv/.tsv）、提前还款临界点在做。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "loan",
+    "apr",
+    "irr",
+    "amortization",
+    "prepayment",
+    "finance"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
