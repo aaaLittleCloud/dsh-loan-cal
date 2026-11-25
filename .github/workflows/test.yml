@@ -20,5 +20,7 @@ jobs:
           node-version: ${{ matrix.node }}
       # No dependencies to install: the plugin is zero-dependency by design.
       - run: node --test
+      - name: Randomised invariant checks
+        run: node scripts/selfcheck.mjs
       - name: Pack must contain exactly the shipped files
         run: npm pack --dry-run
