@@ -9,6 +9,8 @@
 同一笔贷款，算法不同答案就不同。这个插件不猜口径：复利年化按央行〔2021〕第 3 号公告的 IRR 计算，
 单利并列标注，按日计息必须显式声明基准。金额全程整数分，月供取整到分、末期吸收尾差。
 
+信用卡分期「月费率 0.6%」被说成一年 7.2%；分 12 期还，实际成本是**复利 13.84%**——这个差额就是它要量的东西。
+
 工具覆盖一条链路：真实年化 → 摊还表 → 银行计划表核对 → 提前还款 → 多方案对比 → LPR 重定价。
 有意不联网、不解析 Excel、不内置 LPR 数据。
 
@@ -35,33 +37,29 @@
 - 金额是整数分；每次「利率 × 金额」只舍入一次；逐期本金合计必须精确等于本金
 - 只收 CSV/TSV 或粘贴文本，不收 xlsx — [ADR 0003](docs/adr/0003-csv-only-input.md)；LPR 由调用方传入
 
-## 安装与开发
+## 安装
 
-从 Release 的 tarball 安装，不需要 npm 账号，也不需要 git：
+需要 DSH ≥ 0.2.0（见 `engines`）。
 
 ```sh
-dsh plugin --profile <profile> add https://github.com/aaaLittleCloud/dsh-loan-cal/releases/download/v0.1.0/dsh-loan-cal-0.1.0.tgz
+dsh plugin --profile <profile> add dsh-loan-cal
 ```
 
-或者从源码装：
+## 开发
 
 ```sh
 git clone https://github.com/aaaLittleCloud/dsh-loan-cal
-dsh plugin --profile <profile> add file:./dsh-loan-cal
+dsh plugin --profile dev add file:./dsh-loan-cal   # file: 安装是快照
+
+npm test          # 106 个测试，无需网络
+npm run check     # 随机输入的不变量自检
 ```
-
-尚未发布到 npm；发布后为 `dsh plugin --profile <profile> add dsh-loan-cal`。
-
-```sh
-npm test        # 99 个测试，无需网络
-```
-
-`file:` 安装是快照，改代码后需 `remove` + `add` 重新挂载。
 
 ## 验证
 
-99 个测试，含央行公告附件三个官方算例（4.88% / 单利 5% 与 IRR 5.12% / 单利 12.80% 与 IRR 13.58%）；
-六个工具已在真实 profile 中实机执行。
+106 个测试，含央行公告附件三个官方算例（4.88% / 单利 5% 与 IRR 5.12% / 单利 12.80% 与 IRR 13.58%）；
+另有一组随机输入的不变量自检，覆盖固定用例碰不到的地方：本金分项必须有合计等于本金、每张表必须结清、
+有歧义的金额必须拒绝而不是猜。CI 在 Node 22 与 24 上跑这两项，六个工具也都已在真实 profile 里执行过。
 
 ## 引用
 

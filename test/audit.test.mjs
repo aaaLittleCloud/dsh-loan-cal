@@ -32,7 +32,17 @@ test('a table produced by our own engine audits clean', () => {
 });
 
 test('a 365/360 basis error is attributed to the day count, not to the rate', () => {
-  const schedule = buildSchedule(CONTRACT);
+  // Daily accrual is where a basis error is realistic: interest-only with a
+  // stated ACT/360, and a statement that actually used ACT/365.
+  const io = {
+    principalCents: 100_000_000,
+    annualRate: 0.04,
+    periods: 12,
+    method: 'interest-only',
+    startDate: '2026-01-01',
+    basis: 'ACT/360',
+  };
+  const schedule = buildSchedule(io);
   const inflated = schedule.rows.map((row) => {
     const interestCents = Math.round(row.interestCents * (365 / 360));
     return {
@@ -44,11 +54,18 @@ test('a 365/360 basis error is attributed to the day count, not to the rate', ()
     };
   });
 
-  const audit = auditSchedule({ records: inflated, contract: CONTRACT });
+  const audit = auditSchedule({ records: inflated, contract: io });
   assert.equal(audit.verdict, 'mismatch');
   assert.equal(audit.cause.code, 'dayCount');
   assert.ok(audit.totals.interestDiffCents > 0, 'the bank charged more');
-  assert.ok(audit.firstDiffPeriod >= 1);
+});
+
+test('a monthly product with a shifted rate is attributed to the rate', () => {
+  // The same +1.4% interest gap on a level-payment loan is a rate difference, and
+  // the attribution must not blame the day count just because the number looks familiar.
+  const shifted = buildSchedule({ ...CONTRACT, annualRate: 0.0355 });
+  const audit = auditSchedule({ records: recordsOf(shifted), contract: CONTRACT });
+  assert.equal(audit.cause.code, 'rate');
 });
 
 test('a wrong rate is attributed to the rate', () => {

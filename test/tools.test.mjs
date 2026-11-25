@@ -115,6 +115,21 @@ test('loan_schedule drives the daily clock through the basis argument', async ()
   );
 });
 
+test('a 0% loan renders as 0.00%, never a negative zero', async () => {
+  const result = await byName('loan_schedule').execute({ principal: 120000, annualRate: 0, periods: 12 });
+  assert.match(result.markdown, /单利 0\.00% \/ 复利 0\.00%/);
+  assert.doesNotMatch(result.markdown, /-0\.0/);
+});
+
+test('equal principal reports the real first and last instalment', async () => {
+  const result = await byName('loan_schedule').execute({
+    principal: 12000, annualRate: 12, periods: 12, method: '等额本金',
+  });
+  assert.match(result.markdown, /首期 ¥1,120\.00 → 末期 ¥1,010\.00/);
+  assert.doesNotMatch(result.markdown, /每期还款/);
+  assert.equal(result.data.paymentCents, null);
+});
+
 test('loan_schedule validates its own inputs', async () => {
   await assert.rejects(
     () => byName('loan_schedule').execute({ principal: 100000, annualRate: 150, periods: 12 }),

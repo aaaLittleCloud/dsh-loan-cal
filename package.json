@@ -1,6 +1,6 @@
 {
   "name": "dsh-loan-cal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Six strict-convention loan tools for DeepSeek Harness: real APR from installment fees, amortisation schedules, bank-statement audits, prepayment break-even, offer comparison and LPR repricing. Zero runtime dependencies. · 严格口径的借贷计算插件：六个工具覆盖分期年化、摊还表、计划表审计、提前还款、方案对比与 LPR 重定价；零运行时依赖。",
   "type": "module",
   "main": "index.js",
@@ -30,7 +30,8 @@
     "dsh": ">=0.2.0"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "check": "node scripts/selfcheck.mjs"
   },
   "keywords": [
     "dsh",

@@ -116,9 +116,19 @@ test('money cells survive the shapes banks actually print', () => {
   assert.equal(parseMoneyCell('¥1,234.56'), 123456);
   assert.equal(parseMoneyCell('1234.56元'), 123456);
   assert.equal(parseMoneyCell('(1,234.56)'), -123456);
+  assert.equal(parseMoneyCell('-12.30'), -1230);
   assert.equal(parseMoneyCell(''), null);
   assert.equal(parseMoneyCell('-'), null);
   assert.equal(parseMoneyCell('待定'), null);
+});
+
+test('ambiguous separators are rejected rather than guessed', () => {
+  // Stripping commas blindly would read these as 123 and 1.23 — a wrong number
+  // inside an audit, which is worse than a warning.
+  assert.equal(parseMoneyCell('1,2,3'), null);
+  assert.equal(parseMoneyCell('1.234,56'), null);
+  assert.equal(parseMoneyCell('12,34.5'), null);
+  assert.equal(parseMoneyCell('1.2.3'), null);
 });
 
 test('period and date cells cover the common formats', () => {
@@ -131,9 +141,17 @@ test('period and date cells cover the common formats', () => {
   assert.equal(parseDateCell('2026/2/15'), '2026-02-15');
   assert.equal(parseDateCell('2026年2月15日'), '2026-02-15');
   assert.equal(parseDateCell('20260215'), '2026-02-15');
-  // Excel serial, still common after a copy-paste into CSV.
+  // Excel serial, still common after a copy-paste into CSV; a datetime keeps its date.
   assert.equal(parseDateCell('46082'), '2026-03-01');
+  assert.equal(parseDateCell('46082.5'), '2026-03-01');
   assert.equal(parseDateCell('2026-13-01'), null);
+});
+
+test('a row counter does not win the period role over the actual period', () => {
+  const withCounter = scoreHeaderRow(['序号', '期数', '本金(元)', '利息(元)']);
+  assert.equal(withCounter.mapping.period, 1, '期数 is the period, 序号 is only a counter');
+  const onlyCounter = scoreHeaderRow(['序号', '本金', '利息']);
+  assert.equal(onlyCounter.mapping.period, 0, 'with no better candidate the counter is still usable');
 });
 
 test('coerceRows records unparsable cells instead of dropping rows', () => {

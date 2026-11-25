@@ -140,6 +140,25 @@ test('dates are optional for monthly methods', () => {
   assert.equal(schedule.rows[0].dueDate, null);
 });
 
+test('equal principal splits the principal exactly, even when P/n is sub-fen', () => {
+  // ¥0.03 over 7 periods: a single rounded instalment would be 0 fen and the
+  // schedule would never amortise. The largest-remainder split keeps it exact.
+  const schedule = buildSchedule({ principalCents: 3, annualRate: 0.12, periods: 7, method: 'equal-principal' });
+  assertCloses(schedule, 3);
+  assert.deepEqual(schedule.rows.map((row) => row.principalCents), [1, 1, 1, 0, 0, 0, 0]);
+  assert.equal(schedule.paymentCents, null, 'equal principal has no level instalment');
+  assert.ok(schedule.firstPaymentCents > schedule.lastPaymentCents);
+});
+
+test('a level payment is only reported for shapes that have one', () => {
+  const level = buildSchedule({ principalCents: 1_200_000, annualRate: 0.12, periods: 12 });
+  assert.equal(level.paymentCents, level.rows[0].paymentCents);
+
+  const declining = buildSchedule({ principalCents: 1_200_000, annualRate: 0.12, periods: 12, method: 'equal-principal' });
+  assert.equal(declining.paymentCents, null);
+  assert.equal(declining.firstPaymentCents, 112_000);
+});
+
 test('bad input fails with a reason, not a wrong table', () => {
   assert.throws(() => buildSchedule({ principalCents: 0, annualRate: 0.1, periods: 12 }), /principal/);
   assert.throws(() => buildSchedule({ principalCents: 1000, annualRate: 1.5, periods: 12 }), /ratio/);
